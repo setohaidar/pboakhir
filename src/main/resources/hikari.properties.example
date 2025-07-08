@@ -1,0 +1,4 @@
+dataSourceClassName=org.mariadb.jdbc.MariaDbDataSource
+dataSource.url=jdbc:mariadb://localhost:3306/siperu
+dataSource.user=root
+dataSource.password=
