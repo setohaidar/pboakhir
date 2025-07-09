@@ -154,14 +154,20 @@ public class ReservationList {
                 } else {
                     setText(item);
                     switch (item) {
-                        case "Diterima":
+                        case "disetujui":
                             setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
                             break;
-                        case "Ditolak":
+                        case "ditolak":
                             setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
                             break;
-                        case "Menunggu":
+                        case "belum dikonfirmasi":
                             setStyle("-fx-text-fill: #f39c12; -fx-font-weight: bold;");
+                            break;
+                        case "sudah dibersihkan":
+                            setStyle("-fx-text-fill: #1abc9c; -fx-font-weight: bold;");
+                            break;
+                        case "tidak dikonfirmasi":
+                            setStyle("-fx-text-fill: #95a5a6; -fx-font-weight: bold;");
                             break;
                         default:
                             setStyle("-fx-text-fill: #2c3e50;");

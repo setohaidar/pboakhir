@@ -76,7 +76,7 @@ public class ReservationsModel extends Model {
     }
 
     /**
-     * Mengambil reservasi yang sudah selesai dibersihkan (status = 2).
+     * Mengambil reservasi yang sudah selesai dibersihkan (status = 3).
      * @return Daftar reservasi yang sudah dibersihkan.
      */
     public List<Reservation> getCleanedReservations() {
@@ -87,7 +87,7 @@ public class ReservationsModel extends Model {
                 "FROM Reservations r " +
                 "JOIN Rooms ro ON r.room_id = ro.id " +
                 "JOIN Users u ON r.loaner_id = u.id " +
-                "WHERE r.confirmation = 2 " + // confirmation = 2 (sudah dibersihkan)
+                "WHERE r.confirmation = 3 " + // confirmation = 3 (sudah dibersihkan)
                 "ORDER BY r.use_end DESC";
 
         try (Connection conn = dataSource.getConnection();
@@ -115,7 +115,7 @@ public class ReservationsModel extends Model {
                 "SUM(CASE WHEN confirmation IS NULL THEN 1 ELSE 0 END) as pending, " +
                 "SUM(CASE WHEN confirmation = 1 THEN 1 ELSE 0 END) as approved, " +
                 "SUM(CASE WHEN confirmation = 0 THEN 1 ELSE 0 END) as rejected, " +
-                "SUM(CASE WHEN confirmation = 2 THEN 1 ELSE 0 END) as cleaned " +
+                "SUM(CASE WHEN confirmation = 3 THEN 1 ELSE 0 END) as cleaned " +
                 "FROM Reservations";
 
         try (Connection conn = dataSource.getConnection();

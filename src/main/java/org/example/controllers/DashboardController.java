@@ -828,7 +828,7 @@ public class DashboardController {
                         ButtonType.YES, ButtonType.NO);
                 confirmAlert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.YES) {
-                        boolean success = reservationsModel.confirmReservation(selected.id(), ConfirmationStatus.NOT_CONFIRMED);
+                        boolean success = reservationsModel.confirmReservation(selected.id(), ConfirmationStatus.CLEANED);
                         if (success) {
                             NotificationDialog.show("Berhasil",
                                     "Status ruangan berhasil diperbarui!",

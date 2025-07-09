@@ -16,6 +16,10 @@ public enum ConfirmationStatus {
     NOT_CONFIRMED(
         "tidak dikonfirmasi",
         2
+    ),
+    CLEANED(
+        "sudah dibersihkan",
+        3
     );
 
     private final String statusDescription;
