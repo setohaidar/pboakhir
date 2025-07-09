@@ -76,6 +76,20 @@ public class ReservationsModel extends Model {
     }
 
     /**
+     * Update existing cleaning status from code 2 to code 3 (manual migration)
+     */
+    public void updateLegacyCleaningStatus() {
+        String query = "UPDATE Reservations SET confirmation = 3 WHERE confirmation = 2 AND use_end < NOW()";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            int updatedRows = stmt.executeUpdate();
+            System.out.println("Updated " + updatedRows + " reservations from cleaning status 2 to 3");
+        } catch (SQLException e) {
+            System.err.println("Error updating legacy cleaning status: " + e.getMessage());
+        }
+    }
+
+    /**
      * Mengambil reservasi yang sudah selesai dibersihkan (status = 3).
      * @return Daftar reservasi yang sudah dibersihkan.
      */

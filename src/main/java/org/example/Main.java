@@ -27,6 +27,13 @@ public class Main extends Application {
         RoomsModel roomsModel = new RoomsModel(AppDataSource.getInstance());
         ReservationsModel reservationsModel = new ReservationsModel(AppDataSource.getInstance());
 
+        // Update legacy cleaning status (one-time operation)
+        try {
+            reservationsModel.updateLegacyCleaningStatus();
+        } catch (Exception e) {
+            System.err.println("Warning: Could not update legacy cleaning status: " + e.getMessage());
+        }
+
         new LoginController(usersModel, roomsModel, reservationsModel, primaryStage);
     }
 
