@@ -859,29 +859,142 @@ public class DashboardController {
         scheduleView.show();
     }
 
-    // Fitur tambahan yang diperbaiki
+    // Panduan penggunaan yang diperbaiki dengan dialog yang lebih rapi
     private void showGuide() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Panduan Penggunaan SIPERU");
-        alert.setHeaderText("Cara Menggunakan Sistem");
-        alert.setContentText(
-                "📋 PANDUAN PEMINJAMAN RUANGAN:\n\n" +
-                        "1️⃣ Klik 'Buat Reservasi' untuk mengajukan peminjaman\n" +
-                        "2️⃣ Pilih tanggal dan waktu yang diinginkan\n" +
-                        "3️⃣ Pilih ruangan yang tersedia\n" +
-                        "4️⃣ Masukkan tujuan peminjaman dengan jelas\n" +
-                        "5️⃣ Tunggu konfirmasi dari admin\n" +
-                        "6️⃣ Lihat status di 'Riwayat Reservasi'\n\n" +
-                        "⏰ Jam operasional: 07:00 - 18:00\n" +
-                        "📅 Reservasi minimal H+1 dari hari ini\n" +
-                        "✅ Pastikan tujuan peminjaman jelas dan spesifik"
+        // Create custom dialog
+        Stage guideStage = new Stage();
+        guideStage.initOwner(stage);
+        guideStage.setTitle("Panduan Penggunaan SIPERU");
+        guideStage.setResizable(false);
+
+        // Main container
+        VBox mainContainer = new VBox(20);
+        mainContainer.setPadding(new Insets(30));
+        mainContainer.setStyle("-fx-background-color: white;");
+
+        // Header section
+        HBox headerBox = new HBox(15);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        
+        FontIcon guideIcon = new FontIcon(FontAwesomeSolid.QUESTION_CIRCLE);
+        guideIcon.setIconSize(32);
+        guideIcon.setIconColor(Color.web("#3498db"));
+
+        Label titleLabel = new Label("Cara Menggunakan Sistem");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        headerBox.getChildren().addAll(guideIcon, titleLabel);
+
+        // Content area dengan scroll
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+        scrollPane.setStyle("-fx-background-color: white; -fx-border-color: transparent;");
+
+        VBox contentBox = new VBox(20);
+        contentBox.setPadding(new Insets(20));
+
+        // Section 1: Panduan Peminjaman
+        VBox section1 = createGuideSection("📋 PANDUAN PEMINJAMAN RUANGAN:", 
+            new String[]{
+                "1️⃣ Klik 'Buat Reservasi' untuk mengajukan peminjaman",
+                "2️⃣ Pilih tanggal dan waktu yang diinginkan", 
+                "3️⃣ Pilih ruangan yang tersedia",
+                "4️⃣ Masukkan tujuan peminjaman dengan jelas",
+                "5️⃣ Tunggu konfirmasi dari admin",
+                "6️⃣ Lihat status di 'Riwayat Reservasi'"
+            });
+
+        // Section 2: Ketentuan Umum
+        VBox section2 = createGuideSection("⚠️ KETENTUAN UMUM:",
+            new String[]{
+                "⏰ Jam operasional: 07:00 - 18:00",
+                "📅 Reservasi minimal H+1 dari hari ini",
+                "✅ Pastikan tujuan peminjaman jelas dan spesifik",
+                "🚫 Maksimal 3 jam per reservasi",
+                "📞 Hubungi admin jika ada masalah"
+            });
+
+        // Section 3: Status Reservasi
+        VBox section3 = createGuideSection("📊 STATUS RESERVASI:",
+            new String[]{
+                "🟡 Belum dikonfirmasi - Menunggu persetujuan admin",
+                "🟢 Disetujui - Reservasi telah disetujui",
+                "🔴 Ditolak - Reservasi tidak disetujui",
+                "🟦 Sudah dibersihkan - Ruangan telah dibersihkan"
+            });
+
+        // Section 4: Tips
+        VBox section4 = createGuideSection("💡 TIPS PENGGUNAAN:",
+            new String[]{
+                "📝 Tuliskan tujuan peminjaman yang jelas",
+                "⏰ Ajukan reservasi jauh-jauh hari",
+                "📱 Cek status reservasi secara berkala",
+                "🏢 Pastikan ruangan sesuai kebutuhan",
+                "🧹 Jaga kebersihan ruangan setelah digunakan"
+            });
+
+        contentBox.getChildren().addAll(section1, section2, section3, section4);
+        scrollPane.setContent(contentBox);
+
+        // Footer dengan tombol
+        HBox footerBox = new HBox(10);
+        footerBox.setAlignment(Pos.CENTER);
+        
+        Button okButton = new Button("Mengerti");
+        okButton.setStyle(
+                "-fx-background-color: #3498db;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 10 30;" +
+                "-fx-background-radius: 25;" +
+                "-fx-cursor: hand;"
+        );
+        
+        okButton.setOnAction(e -> guideStage.close());
+        footerBox.getChildren().add(okButton);
+
+        mainContainer.getChildren().addAll(headerBox, scrollPane, footerBox);
+
+        Scene scene = new Scene(mainContainer, 600, 500);
+        guideStage.setScene(scene);
+        guideStage.showAndWait();
+    }
+
+    private VBox createGuideSection(String title, String[] items) {
+        VBox section = new VBox(10);
+        section.setStyle(
+                "-fx-background-color: #f8f9fa;" +
+                "-fx-padding: 15;" +
+                "-fx-background-radius: 10;" +
+                "-fx-border-color: #e9ecef;" +
+                "-fx-border-radius: 10;" +
+                "-fx-border-width: 1;"
         );
 
-        // Styling untuk dialog
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.setStyle("-fx-background-color: white; -fx-border-radius: 10; -fx-background-radius: 10;");
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle(
+                "-fx-font-size: 16px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-text-fill: #2c3e50;" +
+                "-fx-padding: 0 0 10 0;"
+        );
 
-        alert.showAndWait();
+        section.getChildren().add(titleLabel);
+
+        for (String item : items) {
+            Label itemLabel = new Label(item);
+            itemLabel.setStyle(
+                    "-fx-font-size: 14px;" +
+                    "-fx-text-fill: #34495e;" +
+                    "-fx-padding: 5 0 0 10;"
+            );
+            itemLabel.setWrapText(true);
+            section.getChildren().add(itemLabel);
+        }
+
+        return section;
     }
 
     // Ganti method showCleaningHistory() dengan:
