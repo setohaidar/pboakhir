@@ -56,11 +56,13 @@ public class DashboardController {
 
         root = new BorderPane();
 
-        // Background gradient yang modern
+        // Background gradient yang lebih modern dan konsisten dengan login
         LinearGradient gradient = new LinearGradient(
                 0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.web("#667eea")),
-                new Stop(1, Color.web("#764ba2"))
+                new Stop(0.3, Color.web("#764ba2")),
+                new Stop(0.7, Color.web("#f093fb")),
+                new Stop(1, Color.web("#f5576c"))
         );
 
         BackgroundFill backgroundFill = new BackgroundFill(gradient, CornerRadii.EMPTY, Insets.EMPTY);
@@ -69,13 +71,22 @@ public class DashboardController {
         setupHeader();
         setupMainContent();
 
-        Scene scene = new Scene(root, 1000, 700);
+        Scene scene = new Scene(root, 1200, 800);
         stage.setScene(scene);
-        stage.setTitle("SIPERU - Dashboard");
+        stage.setTitle("SIPERU - Dashboard (" + user.role().getRoleName() + ")");
+        
+        // ENABLE WINDOW CONTROLS - maximize, minimize, resize
+        stage.setResizable(true);
+        stage.setMaximized(false);
+        
+        // Set minimum window size
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        
         stage.show();
 
-        // Animasi fade in
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(600), root);
+        // Animasi fade in yang smooth
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(800), root);
         fadeIn.setFromValue(0.0);
         fadeIn.setToValue(1.0);
         fadeIn.play();
@@ -90,51 +101,83 @@ public class DashboardController {
 
     private void setupHeader() {
         HBox header = new HBox();
-        header.setPadding(new Insets(20, 30, 20, 30));
+        header.setPadding(new Insets(25, 40, 25, 40));
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setStyle("-fx-background-color: rgba(255, 255, 255, 0.1);");
+        header.setStyle(
+                "-fx-background-color: rgba(255, 255, 255, 0.15);" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);"
+        );
 
-        // Logo dan title
+        // Logo dan title dengan styling yang konsisten
         FontIcon logoIcon = new FontIcon(FontAwesomeSolid.BUILDING);
-        logoIcon.setIconSize(24);
+        logoIcon.setIconSize(28);
         logoIcon.setIconColor(Color.WHITE);
 
         Label titleLabel = new Label("SIPERU");
-        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
+        titleLabel.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 24px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
 
-        HBox logoBox = new HBox(10, logoIcon, titleLabel);
+        Label subtitleLabel = new Label("Dashboard");
+        subtitleLabel.setStyle(
+                "-fx-text-fill: rgba(255, 255, 255, 0.8);" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
+
+        VBox logoBox = new VBox(5);
         logoBox.setAlignment(Pos.CENTER_LEFT);
+        logoBox.getChildren().addAll(
+                new HBox(10, logoIcon, titleLabel),
+                subtitleLabel
+        );
 
-        // User info dan logout
+        // User info dengan styling yang lebih baik
+        FontIcon userIcon = new FontIcon(FontAwesomeSolid.USER_CIRCLE);
+        userIcon.setIconSize(20);
+        userIcon.setIconColor(Color.WHITE);
+
         Label userLabel = new Label("Halo, " + user.name());
-        userLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+        userLabel.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
 
-        Label roleLabel = new Label("(" + user.role().getRoleName() + ")");
-        roleLabel.setStyle("-fx-text-fill: rgba(255, 255, 255, 0.8); -fx-font-size: 12px;");
+        Label roleLabel = new Label(user.role().getRoleName());
+        roleLabel.setStyle(
+                "-fx-text-fill: rgba(255, 255, 255, 0.8);" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
+
+        // Badge untuk role
+        Label roleBadge = new Label(user.role().getRoleName().toUpperCase());
+        roleBadge.setStyle(
+                "-fx-background-color: rgba(255, 255, 255, 0.2);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 4 8;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
 
         Button logoutButton = createModernButton("Keluar", FontAwesomeSolid.SIGN_OUT_ALT, "#e74c3c");
-        logoutButton.setOnAction(e -> {
-            // Konfirmasi logout
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Konfirmasi Logout");
-            confirmAlert.setHeaderText(null);
-            confirmAlert.setContentText("Apakah Anda yakin ingin keluar?");
+        logoutButton.setOnAction(e -> handleLogout());
 
-            Optional<ButtonType> result = confirmAlert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                new LoginController(
-                        new UsersModel(AppDataSource.getInstance()),
-                        roomsModel,
-                        reservationsModel,
-                        stage
-                );
-            }
-        });
-
-        VBox userInfo = new VBox(2, userLabel, roleLabel);
+        VBox userInfo = new VBox(5);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
+        userInfo.getChildren().addAll(
+                new HBox(8, userIcon, userLabel),
+                roleBadge
+        );
 
-        HBox rightBox = new HBox(15, userInfo, logoutButton);
+        HBox rightBox = new HBox(20, userInfo, logoutButton);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
 
         Region spacer = new Region();
@@ -144,106 +187,204 @@ public class DashboardController {
         root.setTop(header);
     }
 
-    private void setupMainContent() {
-        VBox mainContent = new VBox(30);
-        mainContent.setPadding(new Insets(40));
-        mainContent.setAlignment(Pos.CENTER);
+    private void handleLogout() {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Konfirmasi Logout");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("Apakah Anda yakin ingin keluar dari sistem?");
 
-        // Welcome message
-        Label welcomeLabel = new Label("Selamat Datang di Dashboard");
-        welcomeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;");
+        // Modern alert styling
+        DialogPane dialogPane = confirmAlert.getDialogPane();
+        dialogPane.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-border-radius: 15;" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 10);" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
 
-        Label descLabel = new Label("Kelola reservasi ruangan dengan mudah dan efisien");
-        descLabel.setStyle("-fx-text-fill: rgba(255, 255, 255, 0.9); -fx-font-size: 16px;");
-
-        VBox welcomeBox = new VBox(10, welcomeLabel, descLabel);
-        welcomeBox.setAlignment(Pos.CENTER);
-
-        // Quick stats
-        HBox statsBox = createQuickStats();
-
-        // Menu cards berdasarkan role
-        FlowPane menuPane = new FlowPane();
-        menuPane.setHgap(20);
-        menuPane.setVgap(20);
-        menuPane.setAlignment(Pos.CENTER);
-
-        switch (user.role()) {
-            case LOANER:
-                menuPane.getChildren().addAll(
-                        createMenuCard("Buat Reservasi", "Ajukan peminjaman ruangan baru",
-                                FontAwesomeSolid.PLUS_CIRCLE, "#3498db", this::openAddReservation),
-                        createMenuCard("Riwayat Reservasi", "Lihat semua reservasi Anda",
-                                FontAwesomeSolid.HISTORY, "#2ecc71", this::openReservationHistory),
-                        createMenuCard("Panduan", "Cara menggunakan sistem",
-                                FontAwesomeSolid.QUESTION_CIRCLE, "#f39c12", this::showGuide)
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Fade out animation sebelum kembali ke login
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(400), root);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+                new LoginController(
+                        new UsersModel(AppDataSource.getInstance()),
+                        roomsModel,
+                        reservationsModel,
+                        stage
                 );
-                break;
-            case ADMIN_STAFF:
-                menuPane.getChildren().addAll(
-                        createMenuCard("Kelola Reservasi", "Setujui atau tolak reservasi",
-                                FontAwesomeSolid.TASKS, "#e74c3c", this::openReservationManagement),
-                        createMenuCard("Semua Reservasi", "Lihat semua reservasi sistem",
-                                FontAwesomeSolid.LIST, "#9b59b6", this::showAllReservations),
-                        createMenuCard("Statistik", "Lihat statistik penggunaan",
-                                FontAwesomeSolid.CHART_BAR, "#1abc9c", this::showStatistics)
-                );
-                break;
-            case CLEANING_STAFF:
-                menuPane.getChildren().addAll(
-                        createMenuCard("Jadwal Pembersihan", "Lihat ruangan yang perlu dibersihkan",
-                                FontAwesomeSolid.CALENDAR_ALT, "#1abc9c", this::openRoomUseSchedule),
-                        createMenuCard("Riwayat Pembersihan", "Lihat riwayat pembersihan",
-                                FontAwesomeSolid.CHECK_CIRCLE, "#27ae60", this::showCleaningHistory)
-                );
-                break;
+            });
+            fadeOut.play();
         }
+    }
 
-        mainContent.getChildren().addAll(welcomeBox, statsBox, menuPane);
-        root.setCenter(mainContent);
+    private void setupMainContent() {
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        VBox mainContent = new VBox(40);
+        mainContent.setPadding(new Insets(40, 60, 40, 60));
+        mainContent.setAlignment(Pos.TOP_CENTER);
+
+        // Welcome section dengan styling yang lebih baik
+        VBox welcomeSection = createWelcomeSection();
+        
+        // Quick stats dengan cards yang lebih modern
+        HBox statsSection = createQuickStats();
+
+        // Menu cards dengan layout yang responsif
+        VBox menuSection = createMenuSection();
+
+        mainContent.getChildren().addAll(welcomeSection, statsSection, menuSection);
+        scrollPane.setContent(mainContent);
+        root.setCenter(scrollPane);
+    }
+
+    private VBox createWelcomeSection() {
+        VBox welcomeSection = new VBox(15);
+        welcomeSection.setAlignment(Pos.CENTER);
+
+        // Icon untuk role
+        FontIcon roleIcon = getRoleIcon();
+        roleIcon.setIconSize(50);
+        roleIcon.setIconColor(Color.WHITE);
+
+        Label welcomeLabel = new Label("Selamat Datang, " + user.name() + "!");
+        welcomeLabel.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 32px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);"
+        );
+
+        Label descLabel = new Label(getRoleDescription());
+        descLabel.setStyle(
+                "-fx-text-fill: rgba(255, 255, 255, 0.9);" +
+                        "-fx-font-size: 18px;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
+
+        // Current time
+        Label timeLabel = new Label("📅 " + java.time.LocalDateTime.now().format(
+                java.time.format.DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy HH:mm")
+        ));
+        timeLabel.setStyle(
+                "-fx-text-fill: rgba(255, 255, 255, 0.8);" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
+
+        welcomeSection.getChildren().addAll(roleIcon, welcomeLabel, descLabel, timeLabel);
+        return welcomeSection;
+    }
+
+    private FontIcon getRoleIcon() {
+        return switch (user.role()) {
+            case LOANER -> new FontIcon(FontAwesomeSolid.USER);
+            case ADMIN_STAFF -> new FontIcon(FontAwesomeSolid.USER_TIE);
+            case CLEANING_STAFF -> new FontIcon(FontAwesomeSolid.BROOM);
+        };
+    }
+
+    private String getRoleDescription() {
+        return switch (user.role()) {
+            case LOANER -> "Kelola reservasi ruangan dengan mudah dan efisien";
+            case ADMIN_STAFF -> "Kelola dan setujui semua pengajuan reservasi";
+            case CLEANING_STAFF -> "Pantau jadwal pembersihan ruangan";
+        };
     }
 
     private HBox createQuickStats() {
-        HBox statsBox = new HBox(20);
+        HBox statsBox = new HBox(30);
         statsBox.setAlignment(Pos.CENTER);
 
         // Total reservasi hari ini
         int todayReservations = getTodayReservationsCount();
-        VBox todayStats = createStatCard("Reservasi Hari Ini", String.valueOf(todayReservations), "#3498db");
+        VBox todayStats = createStatCard("Reservasi Hari Ini", String.valueOf(todayReservations), "#3498db", FontAwesomeSolid.CALENDAR_DAY);
 
-        // Pending reservasi (untuk admin)
         if (user.role() == Roles.ADMIN_STAFF) {
+            // Pending reservasi untuk admin
             int pendingCount = reservationsModel.getAllPendingReservations().size();
-            VBox pendingStats = createStatCard("Menunggu Persetujuan", String.valueOf(pendingCount), "#f39c12");
-            statsBox.getChildren().addAll(todayStats, pendingStats);
+            VBox pendingStats = createStatCard("Menunggu Persetujuan", String.valueOf(pendingCount), "#f39c12", FontAwesomeSolid.CLOCK);
+            
+            // Total ruangan
+            int totalRooms = roomsModel.getAllRooms().size();
+            VBox roomStats = createStatCard("Total Ruangan", String.valueOf(totalRooms), "#2ecc71", FontAwesomeSolid.DOOR_OPEN);
+            
+            statsBox.getChildren().addAll(todayStats, pendingStats, roomStats);
         } else {
-            // User reservasi (untuk loaner)
+            // User reservasi untuk loaner
             int userReservations = reservationsModel.getReservationsByUserId(user.id()).size();
-            VBox userStats = createStatCard("Total Reservasi Saya", String.valueOf(userReservations), "#2ecc71");
-            statsBox.getChildren().addAll(todayStats, userStats);
+            VBox userStats = createStatCard("Total Reservasi Saya", String.valueOf(userReservations), "#2ecc71", FontAwesomeSolid.LIST_ALT);
+            
+            // Reservasi aktif
+            int activeReservations = (int) reservationsModel.getReservationsByUserId(user.id()).stream()
+                    .filter(r -> r.startTime().after(new java.util.Date()))
+                    .count();
+            VBox activeStats = createStatCard("Reservasi Aktif", String.valueOf(activeReservations), "#9b59b6", FontAwesomeSolid.PLAY_CIRCLE);
+            
+            statsBox.getChildren().addAll(todayStats, userStats, activeStats);
         }
 
         return statsBox;
     }
 
-    private VBox createStatCard(String title, String value, String color) {
-        VBox card = new VBox(5);
-        card.setPadding(new Insets(15));
+    private VBox createStatCard(String title, String value, String color, FontAwesomeSolid icon) {
+        VBox card = new VBox(10);
+        card.setPadding(new Insets(25));
         card.setAlignment(Pos.CENTER);
-        card.setPrefSize(180, 80);
+        card.setPrefSize(220, 120);
         card.setStyle(
-                "-fx-background-color: rgba(255, 255, 255, 0.9);" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-radius: 10;"
+                "-fx-background-color: rgba(255, 255, 255, 0.95);" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 8);"
         );
 
+        FontIcon cardIcon = new FontIcon(icon);
+        cardIcon.setIconSize(30);
+        cardIcon.setIconColor(Color.web(color));
+
         Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: " + color + ";");
+        valueLabel.setStyle(
+                "-fx-font-size: 28px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: " + color + ";" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
 
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+        titleLabel.setStyle(
+                "-fx-font-size: 13px;" +
+                        "-fx-text-fill: #7f8c8d;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                        "-fx-text-alignment: center;"
+        );
+        titleLabel.setWrapText(true);
 
-        card.getChildren().addAll(valueLabel, titleLabel);
+        card.getChildren().addAll(cardIcon, valueLabel, titleLabel);
+
+        // Hover animation
+        card.setOnMouseEntered(e -> {
+            ScaleTransition scale = new ScaleTransition(Duration.millis(200), card);
+            scale.setToX(1.05);
+            scale.setToY(1.05);
+            scale.play();
+        });
+
+        card.setOnMouseExited(e -> {
+            ScaleTransition scale = new ScaleTransition(Duration.millis(200), card);
+            scale.setToX(1.0);
+            scale.setToY(1.0);
+            scale.play();
+        });
+
         return card;
     }
 
@@ -259,52 +400,119 @@ public class DashboardController {
                 .count();
     }
 
-    private VBox createMenuCard(String title, String description, FontAwesomeSolid icon, String color, Runnable action) {
-        VBox card = new VBox(15);
-        card.setPadding(new Insets(25));
-        card.setAlignment(Pos.CENTER);
-        card.setPrefSize(250, 180);
-        card.setStyle(
-                "-fx-background-color: rgba(255, 255, 255, 0.95);" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-cursor: hand;"
+    private VBox createMenuSection() {
+        VBox menuSection = new VBox(25);
+        menuSection.setAlignment(Pos.CENTER);
+
+        Label menuTitle = new Label("Menu Utama");
+        menuTitle.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 24px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
         );
 
-        // Efek bayangan
-        DropShadow shadow = new DropShadow();
-        shadow.setColor(Color.rgb(0, 0, 0, 0.2));
-        shadow.setOffsetX(0);
-        shadow.setOffsetY(5);
-        shadow.setRadius(15);
-        card.setEffect(shadow);
+        // Grid layout yang responsif untuk menu cards
+        GridPane menuGrid = new GridPane();
+        menuGrid.setHgap(25);
+        menuGrid.setVgap(25);
+        menuGrid.setAlignment(Pos.CENTER);
 
-        // Icon
+        // Add menu cards berdasarkan role
+        int col = 0;
+        int row = 0;
+        final int maxCols = 3;
+
+        switch (user.role()) {
+            case LOANER:
+                menuGrid.add(createMenuCard("Buat Reservasi", "Ajukan peminjaman ruangan baru",
+                        FontAwesomeSolid.PLUS_CIRCLE, "#3498db", this::openAddReservation), col++, row);
+                menuGrid.add(createMenuCard("Riwayat Reservasi", "Lihat semua reservasi Anda",
+                        FontAwesomeSolid.HISTORY, "#2ecc71", this::openReservationHistory), col++, row);
+                menuGrid.add(createMenuCard("Panduan Sistem", "Cara menggunakan SIPERU",
+                        FontAwesomeSolid.QUESTION_CIRCLE, "#f39c12", this::showGuide), col++, row);
+                break;
+            case ADMIN_STAFF:
+                menuGrid.add(createMenuCard("Kelola Reservasi", "Setujui atau tolak reservasi",
+                        FontAwesomeSolid.TASKS, "#e74c3c", this::openReservationManagement), col++, row);
+                menuGrid.add(createMenuCard("Semua Reservasi", "Lihat semua reservasi sistem",
+                        FontAwesomeSolid.LIST, "#9b59b6", this::showAllReservations), col++, row);
+                menuGrid.add(createMenuCard("Statistik Sistem", "Lihat statistik penggunaan",
+                        FontAwesomeSolid.CHART_BAR, "#1abc9c", this::showStatistics), col++, row);
+                break;
+            case CLEANING_STAFF:
+                menuGrid.add(createMenuCard("Jadwal Pembersihan", "Lihat ruangan yang perlu dibersihkan",
+                        FontAwesomeSolid.CALENDAR_ALT, "#1abc9c", this::openRoomUseSchedule), col++, row);
+                menuGrid.add(createMenuCard("Riwayat Pembersihan", "Lihat riwayat pembersihan",
+                        FontAwesomeSolid.CHECK_CIRCLE, "#27ae60", this::showCleaningHistory), col++, row);
+                break;
+        }
+
+        menuSection.getChildren().addAll(menuTitle, menuGrid);
+        return menuSection;
+    }
+
+    private VBox createMenuCard(String title, String description, FontAwesomeSolid icon, String color, Runnable action) {
+        VBox card = new VBox(20);
+        card.setPadding(new Insets(30));
+        card.setAlignment(Pos.CENTER);
+        card.setPrefSize(280, 200);
+        card.setMaxWidth(280);
+        card.setStyle(
+                "-fx-background-color: rgba(255, 255, 255, 0.95);" +
+                        "-fx-background-radius: 20;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 10);"
+        );
+
+        // Icon dengan background circle
+        StackPane iconContainer = new StackPane();
+        iconContainer.setPrefSize(80, 80);
+        iconContainer.setStyle(
+                "-fx-background-color: " + color + ";" +
+                        "-fx-background-radius: 40;"
+        );
+
         FontIcon cardIcon = new FontIcon(icon);
-        cardIcon.setIconSize(40);
-        cardIcon.setIconColor(Color.web(color));
+        cardIcon.setIconSize(35);
+        cardIcon.setIconColor(Color.WHITE);
+        iconContainer.getChildren().add(cardIcon);
 
         // Title
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titleLabel.setStyle(
+                "-fx-font-size: 20px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: #2c3e50;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                        "-fx-text-alignment: center;"
+        );
+        titleLabel.setWrapText(true);
 
         // Description
         Label descLabel = new Label(description);
-        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d; -fx-text-alignment: center;");
+        descLabel.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-text-fill: #7f8c8d;" +
+                        "-fx-text-alignment: center;" +
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
+        );
         descLabel.setWrapText(true);
 
-        card.getChildren().addAll(cardIcon, titleLabel, descLabel);
+        card.getChildren().addAll(iconContainer, titleLabel, descLabel);
 
-        // Animasi hover
+        // Enhanced hover animation
         card.setOnMouseEntered(e -> {
             ScaleTransition scale = new ScaleTransition(Duration.millis(200), card);
-            scale.setToX(1.05);
-            scale.setToY(1.05);
+            scale.setToX(1.08);
+            scale.setToY(1.08);
             scale.play();
 
             card.setStyle(
                     "-fx-background-color: white;" +
-                            "-fx-background-radius: 15;" +
-                            "-fx-cursor: hand;"
+                            "-fx-background-radius: 20;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 30, 0, 0, 15);"
             );
         });
 
@@ -316,8 +524,9 @@ public class DashboardController {
 
             card.setStyle(
                     "-fx-background-color: rgba(255, 255, 255, 0.95);" +
-                            "-fx-background-radius: 15;" +
-                            "-fx-cursor: hand;"
+                            "-fx-background-radius: 20;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 10);"
             );
         });
 
@@ -337,12 +546,43 @@ public class DashboardController {
         button.setStyle(
                 "-fx-background-color: " + color + ";" +
                         "-fx-text-fill: white;" +
-                        "-fx-font-size: 12px;" +
+                        "-fx-font-size: 13px;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-padding: 8 16;" +
-                        "-fx-background-radius: 20;" +
-                        "-fx-cursor: hand;"
+                        "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                        "-fx-padding: 10 20;" +
+                        "-fx-background-radius: 25;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 4);"
         );
+
+        // Hover effect
+        button.setOnMouseEntered(e -> {
+            button.setStyle(
+                    "-fx-background-color: derive(" + color + ", -10%);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-size: 13px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                            "-fx-padding: 10 20;" +
+                            "-fx-background-radius: 25;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 6);"
+            );
+        });
+
+        button.setOnMouseExited(e -> {
+            button.setStyle(
+                    "-fx-background-color: " + color + ";" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-size: 13px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-family: 'Segoe UI', Arial, sans-serif;" +
+                            "-fx-padding: 10 20;" +
+                            "-fx-background-radius: 25;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 4);"
+            );
+        });
 
         return button;
     }

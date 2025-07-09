@@ -1,0 +1,407 @@
+/* SIPERU Modern UI Styles */
+
+/* Root Variables */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    
+    /* Color Palette */
+    -primary-color: #667eea;
+    -secondary-color: #764ba2;
+    -accent-color: #f093fb;
+    -danger-color: #e74c3c;
+    -success-color: #2ecc71;
+    -warning-color: #f39c12;
+    -info-color: #3498db;
+    -light-color: #ecf0f1;
+    -dark-color: #2c3e50;
+    -muted-color: #7f8c8d;
+    
+    /* Background Colors */
+    -bg-primary: rgba(255, 255, 255, 0.95);
+    -bg-secondary: rgba(255, 255, 255, 0.85);
+    -bg-overlay: rgba(255, 255, 255, 0.15);
+    
+    /* Border Radius */
+    -radius-small: 8px;
+    -radius-medium: 12px;
+    -radius-large: 20px;
+    -radius-round: 50px;
+    
+    /* Shadows */
+    -shadow-light: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -shadow-medium: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 8);
+    -shadow-heavy: dropshadow(gaussian, rgba(0,0,0,0.25), 25, 0, 0, 15);
+    
+    /* Typography */
+    -font-size-xs: 10px;
+    -font-size-sm: 12px;
+    -font-size-md: 14px;
+    -font-size-lg: 16px;
+    -font-size-xl: 18px;
+    -font-size-2xl: 24px;
+    -font-size-3xl: 32px;
+    -font-size-4xl: 38px;
+}
+
+/* Modern Gradient Backgrounds */
+.gradient-background {
+    -fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 70%, #f5576c 100%);
+}
+
+.gradient-button {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+}
+
+.gradient-button-hover {
+    -fx-background-color: linear-gradient(to right, #5a6fd8, #6a4190);
+}
+
+/* Modern Cards */
+.modern-card {
+    -fx-background-color: -bg-primary;
+    -fx-background-radius: -radius-large;
+    -fx-effect: -shadow-medium;
+    -fx-padding: 25;
+}
+
+.modern-card-hover {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 30, 0, 0, 15);
+}
+
+.stat-card {
+    -fx-background-color: -bg-primary;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+/* Modern Buttons */
+.modern-button {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+    -fx-font-size: -font-size-md;
+    -fx-font-weight: bold;
+    -fx-padding: 12 24;
+    -fx-background-radius: -radius-round;
+    -fx-cursor: hand;
+    -fx-effect: -shadow-light;
+}
+
+.modern-button:hover {
+    -fx-background-color: derive(-primary-color, -10%);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 6);
+}
+
+.modern-button-danger {
+    -fx-background-color: -danger-color;
+}
+
+.modern-button-success {
+    -fx-background-color: -success-color;
+}
+
+.modern-button-warning {
+    -fx-background-color: -warning-color;
+}
+
+/* Modern Input Fields */
+.modern-input-container {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: -radius-medium;
+    -fx-padding: 15;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: -radius-medium;
+    -fx-border-width: 2;
+}
+
+.modern-input-container:focused {
+    -fx-background-color: white;
+    -fx-border-color: -primary-color;
+    -fx-effect: dropshadow(gaussian, rgba(102,126,234,0.25), 10, 0, 0, 0);
+}
+
+.modern-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: -font-size-lg;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Typography Classes */
+.title-large {
+    -fx-font-size: -font-size-4xl;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+.title-medium {
+    -fx-font-size: -font-size-2xl;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.title-small {
+    -fx-font-size: -font-size-xl;
+    -fx-font-weight: bold;
+    -fx-text-fill: -dark-color;
+}
+
+.subtitle {
+    -fx-font-size: -font-size-lg;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+.text-muted {
+    -fx-text-fill: -muted-color;
+    -fx-font-size: -font-size-md;
+}
+
+.text-white {
+    -fx-text-fill: white;
+}
+
+.text-dark {
+    -fx-text-fill: -dark-color;
+}
+
+/* Header Styles */
+.app-header {
+    -fx-background-color: -bg-overlay;
+    -fx-effect: -shadow-light;
+    -fx-padding: 25 40;
+}
+
+.logo-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+}
+
+.user-info {
+    -fx-alignment: center-right;
+    -fx-spacing: 5;
+}
+
+.role-badge {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: -font-size-xs;
+    -fx-font-weight: bold;
+    -fx-padding: 4 8;
+    -fx-background-radius: -radius-small;
+}
+
+/* Content Areas */
+.main-content {
+    -fx-padding: 40 60;
+    -fx-alignment: top-center;
+    -fx-spacing: 40;
+}
+
+.welcome-section {
+    -fx-alignment: center;
+    -fx-spacing: 15;
+}
+
+.stats-section {
+    -fx-alignment: center;
+    -fx-spacing: 30;
+}
+
+.menu-section {
+    -fx-alignment: center;
+    -fx-spacing: 25;
+}
+
+/* Animations */
+.scale-on-hover:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.scale-on-hover-large:hover {
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
+/* Responsive Grid */
+.menu-grid {
+    -fx-hgap: 25;
+    -fx-vgap: 25;
+    -fx-alignment: center;
+}
+
+/* Alert and Dialog Styles */
+.modern-alert .dialog-pane {
+    -fx-background-color: white;
+    -fx-border-radius: -radius-medium;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-heavy;
+}
+
+.modern-alert .dialog-pane .button {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+    -fx-font-size: -font-size-sm;
+    -fx-padding: 8 20;
+    -fx-background-radius: -radius-large;
+    -fx-cursor: hand;
+}
+
+/* ScrollPane Styles */
+.modern-scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.modern-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Table Styles */
+.modern-table {
+    -fx-background-color: white;
+    -fx-border-radius: -radius-medium;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+}
+
+.modern-table .column-header {
+    -fx-background-color: -light-color;
+    -fx-text-fill: -dark-color;
+    -fx-font-weight: bold;
+}
+
+.modern-table .table-row-cell:hover {
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+}
+
+/* Loading States */
+.loading-button {
+    -fx-opacity: 0.7;
+}
+
+/* Notification Styles */
+.notification-success {
+    -fx-background-color: -success-color;
+    -fx-text-fill: white;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+}
+
+.notification-error {
+    -fx-background-color: -danger-color;
+    -fx-text-fill: white;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+}
+
+.notification-warning {
+    -fx-background-color: -warning-color;
+    -fx-text-fill: white;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+}
+
+.notification-info {
+    -fx-background-color: -info-color;
+    -fx-text-fill: white;
+    -fx-background-radius: -radius-medium;
+    -fx-effect: -shadow-medium;
+}
+
+/* Icon Styles */
+.icon-primary {
+    -fx-icon-color: -primary-color;
+}
+
+.icon-white {
+    -fx-icon-color: white;
+}
+
+.icon-muted {
+    -fx-icon-color: -muted-color;
+}
+
+/* Form Styles */
+.form-container {
+    -fx-spacing: 20;
+    -fx-alignment: center;
+}
+
+.form-group {
+    -fx-spacing: 8;
+}
+
+.form-label {
+    -fx-font-size: -font-size-md;
+    -fx-font-weight: bold;
+    -fx-text-fill: -dark-color;
+}
+
+/* Separator Styles */
+.modern-separator {
+    -fx-background-color: -light-color;
+}
+
+/* Demo Account Info */
+.demo-container {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: -radius-small;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: -radius-small;
+    -fx-border-width: 1;
+    -fx-padding: 15;
+    -fx-alignment: center;
+    -fx-spacing: 8;
+}
+
+.demo-account {
+    -fx-font-size: -font-size-sm;
+    -fx-text-fill: #495057;
+    -fx-font-family: "Consolas", monospace;
+}
+
+/* Utility Classes */
+.text-center {
+    -fx-text-alignment: center;
+}
+
+.text-bold {
+    -fx-font-weight: bold;
+}
+
+.text-italic {
+    -fx-font-style: italic;
+}
+
+.cursor-hand {
+    -fx-cursor: hand;
+}
+
+.full-width {
+    -fx-max-width: infinity;
+}
+
+.no-background {
+    -fx-background-color: transparent;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 800px) {
+    .menu-grid {
+        -fx-hgap: 15;
+        -fx-vgap: 15;
+    }
+    
+    .stats-section {
+        -fx-spacing: 20;
+    }
+    
+    .main-content {
+        -fx-padding: 20 30;
+        -fx-spacing: 30;
+    }
+}
