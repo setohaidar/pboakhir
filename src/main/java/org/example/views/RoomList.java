@@ -356,14 +356,14 @@ public class RoomList {
                         "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
         );
 
-        Label roomCapacity = new Label("Kapasitas: " + reservationGroup.room().capacity() + " orang");
-        roomCapacity.setStyle(
+        Label roomId = new Label("Room ID: " + reservationGroup.room().id());
+        roomId.setStyle(
                 "-fx-font-size: 12px;" +
                         "-fx-text-fill: #7f8c8d;" +
                         "-fx-font-family: 'Segoe UI', Arial, sans-serif;"
         );
 
-        roomDetails.getChildren().addAll(roomName, roomCapacity);
+        roomDetails.getChildren().addAll(roomName, roomId);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
